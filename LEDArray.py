@@ -3,6 +3,7 @@ import array
 from color_conversion import hsl_to_rgb
 import time
 import math
+import random
 
 def linspace(start, stop, n):
     if n == 1:
@@ -255,25 +256,34 @@ class Sparkle(LEDTransform):
         self.fade_speed = fade_speed
         self.palette = palette.colors()
         self.idx=0
-        self.led = 10
         self.brightness = self.led_array.strip.brightness()
+
+    def get_random_led(self):
+        return random.randint(0, self.num_pixels-1)
 
 
     def next_state(self):
-        new_state = self.get_blank_state()
-        idx = int(self.idx + self.fade_speed)
-        num_colors = len(self.palette)
-        if idx > num_colors:
-            idx %= num_colors
-        new_state[self.led] = self.palette[idx] + (0, self.brightness)
-        self.idx= idx
-        return new_state
+ 
+            new_state = self.get_blank_state()
+            idx = int(self.idx + self.fade_speed)
+            num_colors = len(self.palette)
+            led = self.get_random_led()
+
+            if idx >= num_colors:
+                idx %= num_colors
+            try:
+                new_state[led] = self.palette[idx] + (0, self.brightness)
+            except IndexError:
+                print((led, idx, num_colors))
+                
+            self.idx = idx
+            return new_state
 
 
 class HSVRoll(LEDTransform):
 
-    def __init__(self, color1:tuple, color2:tuple, increment=None, delay=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, led_array: LEDArray, color1:tuple, color2:tuple, increment=None, delay=None, *args, **kwargs):
+        super().__init__(led_array, *args, **kwargs)
         self.color1 = Color(*color1)
         self.color2 = Color(*color2)
         self.increment = increment or (0, 0, 0)

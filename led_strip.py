@@ -18,13 +18,14 @@ from palettes import fire, white_to_black, halloween_full, halloween_purple_fire
 
 fire_palette = ColorPalette(fire, NUM_PIXELS)
 halloween_palette = ColorPalette(halloween_purple_fire, NUM_PIXELS)
-sparkle_palette = ColorPalette(white_to_black, 24)
+sparkle_palette = ColorPalette(white_to_black, 512)
 
 trans_palette_roll = PaletteRoll(led_array, halloween_purple_fire, 1)
 trans_sparkle = Sparkle(led_array, sparkle_palette, 1)
 
 transforms = [
-    trans_palette_roll
+    trans_palette_roll,
+    trans_sparkle
 ]
 
 led_array.assign_transforms(transforms)
